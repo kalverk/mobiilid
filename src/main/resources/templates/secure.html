@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+<head lang="en">
+  <meta charset="UTF-8"/>
+  <title>DSS hwcrypto demo webapp</title>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+  <link rel="stylesheet" href="css/app.css"/>
+  <script src="js/hwcrypto.js"/>
+  <script src="js/hwcrypto-legacy.js"/>
+  <script src="js/jquery-1.11.2.min.js"/>
+  <script src="js/jquery.form.min.js"/>
+  <script src="js/hex2base.js"/>
+  <script src="js/app.js"/>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Secure hwcrypto demo webapp</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-7">
+      <div class="col-md-7">
+        <h3>Auth with mobile</h3>
+        <button class="btn" id="mobileAuthButton" type="button">Auth()</button>
+      </div>
+      <div class="col-md-7">
+        <h3>Sign with mobile</h3>
+        <button class="btn" id="mobileSignButton" type="button">MobSign()</button>
+      </div>
+      <h3>1. Select a file to sign</h3>
+      <div class="row">
+        <div class="col-md-12">
+          <form id="fileUpload" action="upload" method="post">
+            <div class="form-group">
+              <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <span class="btn btn-primary btn-file">
+                                            Browse… <input type="file" name="file" id="file" multiple=""/>
+                                        </span>
+                                    </span>
+                <input type="text" name="fileName" id="fileName" class="form-control" readonly=""/>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="progress">
+            <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-7">
+      <h3>2. Sign</h3>
+      <button class="btn" id="signButton" type="button" disabled="disabled">Sign()</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-7 hidden" id="downloadSection">
+      <h3>3. Download signed container</h3>
+      <a href="downloadContainer" class="btn btn-success" id="downloadButton">Download</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
