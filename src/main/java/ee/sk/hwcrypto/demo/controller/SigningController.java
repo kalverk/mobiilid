@@ -155,14 +155,20 @@ public class SigningController {
         try{
             //Andmefailil 4 MB limiit, kui see ületatakse, siis tuleks saata ainult räsi
             System.out.println("mobilesign");
+            //TODO seda siin enam vaja pole sest päris rakenduses tuleks kõige alguses ära confida ja see meelde jätta
             configManagerInit();
+
+            //Alustame sessiooni (saadame andmefaili)
+            //See peaks olema ilmselt eraldi üks blokk
             MobileSign mobileSign = new MobileSign();
             String startSessionQuery = mobileSign.startSession();
             SOAPMessage startSessionResponse = SOAPQuery(startSessionQuery);
 
+            //Vaatame kas sessioon sai ilusti alustatud ja eraldame sessiooni koodi mis tarvis järgmisteks päringuteks
             String[] responseParameters = parseStartSessionResponse(startSessionResponse);
             String status = responseParameters[0];
             String sessCode = responseParameters[1];
+            //Sessioon alustatud
 
             System.out.println("status " + status);
             System.out.println("sesscode " + sessCode);
@@ -170,10 +176,14 @@ public class SigningController {
             if(status.equalsIgnoreCase("OK")){
                 //TODO get variables from sesion info
                 //Make the query to sign
+                //Saab lisa parameetreid panna kui tarvis nt. mida kuvatakse kliendi telefonis vt. mobileSignQuery parameetreid
                 String mobileSignQuery = mobileSign.mobileSignQuery(sessCode, "14212128025", "+37200007", "", "Testimine", "", "EST", "", "", "", "", "", "", "asynchClientServer", "", "true", "true");
                 SOAPMessage mobileSignSessionResponse = SOAPQuery(mobileSignQuery);
+                //Allkirjastamise päring tehtud
+
                 //For debug
                 //printSOAPResponse(mobileSignSessionResponse);
+
                 //1. status 2. statuscode 3.challengeid
                 //TODO challenge id tuleks kuvada kasutajale, selle kaudu on võimalik kasutajal veenduda päringu autentsuses
                 String[] mobileSignParameters = parseMobileSignResponse(mobileSignSessionResponse);
@@ -183,11 +193,16 @@ public class SigningController {
                     String statusInfoQuery = mobileSign.getStatusInfo(sessCode,"true","true");
                     //This is filled when the signature is given
                     SOAPMessage statusResponse = SOAPQuery(statusInfoQuery);
+
                     //For debug
                     //printSOAPResponse(statusResponse);
+
+                    //Vaatame kas allkiri sai antud
+                    //Võimalikud koodid mis siit tulla saavad lk37 StatusCode all
+                    //http://www.sk.ee/upload/files/DigiDocService_spec_est.pdf
                     String signatureStatus = parseGetStatusInfo(statusResponse);
                     if(signatureStatus.equalsIgnoreCase("SIGNATURE")){
-                        System.out.println("GETTING THE FILE");
+                        //Allkiri on failil olemas küsime nüüd faili teenuselt
                         String getSignedDocumentQuery = mobileSign.getSignedDoc(sessCode);
                         SOAPMessage getSignedDocumentResponse = SOAPQuery(getSignedDocumentQuery);
                         printSOAPResponse(getSignedDocumentResponse);
@@ -348,5 +363,8 @@ public class SigningController {
     private void configManagerInit(){
         ConfigManager.init("C:\\Users\\kalver\\IdeaProjects\\dss-hwcrypto-demo-master\\jdigidoc.cfg");
     }
+
+
+
 
 }
