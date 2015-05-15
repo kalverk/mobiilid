@@ -25,8 +25,6 @@
  */
 package ee.sk.hwcrypto.demo.controller;
 
-
-import ee.sk.digidoc.SignedDoc;
 import ee.sk.hwcrypto.demo.model.*;
 import ee.sk.hwcrypto.demo.model.Result;
 import ee.sk.hwcrypto.demo.signature.FileSigner;
@@ -46,7 +44,6 @@ import javax.xml.soap.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
@@ -163,12 +160,6 @@ public class SigningController {
             String startSessionQuery = mobileSign.startSession();
             SOAPMessage startSessionResponse = SOAPQuery(startSessionQuery);
 
-            //Enable for debug
-            //printSOAPResponse(startSessionResponse);
-
-            //Session is started and file is sent to service
-            //Sign the document
-
             String[] responseParameters = parseStartSessionResponse(startSessionResponse);
             String status = responseParameters[0];
             String sessCode = responseParameters[1];
@@ -206,13 +197,9 @@ public class SigningController {
                         if(docStatus.equalsIgnoreCase("OK")){
                             //parse doc and save to disk
                             String escaped = escapeHtml(doc);
-                            //System.out.println(escaped);
-                            SignedDoc sdoc = new SignedDoc(SignedDoc.FORMAT_BDOC, SignedDoc.BDOC_VERSION_2_1);
-                            InputStream instream = new ByteArrayInputStream(escaped.getBytes(StandardCharsets.UTF_8));
-                            sdoc.findDataFileAsStream(escaped);
+                            byte[] decodedBytes = org.apache.commons.codec.binary.Base64.decodeBase64(escaped);
                             try (OutputStream stream = new FileOutputStream("C:\\Users\\kalver\\IdeaProjects\\dss-hwcrypto-demo-master\\src\\main\\resources\\SOAP\\leping.bdoc")) {
-                                //sdoc.writeToStream(stream);
-                                stream.write(escaped.getBytes());
+                                stream.write(decodedBytes);
                             }
                         }
                     }

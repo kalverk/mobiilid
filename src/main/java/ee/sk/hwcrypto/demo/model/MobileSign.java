@@ -7,6 +7,8 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+
 /**
  * Created by kalver on 13.05.2015.
  */
@@ -18,7 +20,6 @@ public class MobileSign {
         sdoc.setProfile(SignedDoc.BDOC_PROFILE_TM);
         sdoc.addDataFile(new File("C:\\Users\\kalver\\IdeaProjects\\dss-hwcrypto-demo-master\\src\\main\\leping.txt"),
                 "text/plain", DataFile.CONTENT_BINARY);
-        System.out.println("SDOC created " + sdoc);
         File f = new File("C:\\Users\\kalver\\IdeaProjects\\dss-hwcrypto-demo-master\\src\\main\\resources\\SOAP\\test.bdoc");
         sdoc.writeToFile(f);
 
